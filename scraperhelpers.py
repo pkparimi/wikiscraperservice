@@ -8,6 +8,19 @@ def find_by_key(value, dic):
                 return find_by_key(value, v)
     return None
 
+def find_by_key_dicts(value, dic):
+    # iterates through nested dictionary to find key 
+    if value in dic:
+        if dic[value] is None:
+            dic[value] = {}
+        return dic[value]
+    x = dic.values()
+    for v in x:
+        if isinstance(v, dict):
+             y = find_by_key_dicts(value, v)
+             if y is not None:
+                 return y
+
 def table_of_content_creator(toc_soup):
     # creates dictionary to store Table of contents
     article_dict = {}
@@ -23,6 +36,7 @@ def table_of_content_creator(toc_soup):
         section_text = cur_bullet.select(".toctext")[0].text # gets text of TOC list item
         
         if section_text in ("See also", "See Also", "Notes", "References"):
+            article_list.append(section_text)
             break
         
         cur_level = int(cur_bullet['class'][0][9])
