@@ -11,6 +11,7 @@ def find_by_key(value, dic):
 def table_of_content_creator(toc_soup):
     # creates dictionary to store Table of contents
     article_dict = {}
+    article_list = []
     breaker = False
     level = 1
     section = 1
@@ -28,17 +29,22 @@ def table_of_content_creator(toc_soup):
 
         if cur_level == level:
             if not level_stack:
-                article_dict[section_text] = {}
+                article_dict[section_text] = None
+                article_list.append(section_text)
                 cur_dict = article_dict
                 level_stack.append(section_text)
             else:
                 level_stack.pop()
-                cur_dict[section_text] = {}
+                cur_dict[section_text] = None
+                article_list.append(section_text)
                 level_stack.append(section_text)
         elif cur_level > level:
             level = cur_level
-            cur_dict = cur_dict[level_stack[-1]]
-            cur_dict[section_text] = {}
+            if not cur_dict[level_stack[-1]]:
+                cur_dict[level_stack[-1]] = {}
+                cur_dict = cur_dict[level_stack[-1]]
+            cur_dict[section_text] = None
+            article_list.append(section_text)
             level_stack.append(section_text)
         elif cur_level < level:
             num_to_pop = level - cur_level + 1
@@ -47,13 +53,15 @@ def table_of_content_creator(toc_soup):
                 if level_stack:
                     level_stack.pop()
             if not level_stack:
-                article_dict[section_text] = {}
+                article_dict[section_text] = None
+                article_list.append(section_text)
                 cur_dict = article_dict
                 level_stack.append(section_text)
             else:
                 cur_dict = find_by_key(level_stack.pop(), article_dict)
-                cur_dict[section_text] = {}
+                cur_dict[section_text] = None
+                article_list.append(section_text)
                 level_stack.append(section_text)
                 
         section += 1
-    return article_dict
+    return article_dict, article_list
