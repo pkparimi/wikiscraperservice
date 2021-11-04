@@ -255,7 +255,13 @@ class Scraper:
         except:
             self.article_dict["area_km"] = "NOT FOUND IN THIS ARTICLE"
             self.article_dict["area_mi"] = "NOT FOUND IN THIS ARTICLE"
-        
+    
+    def get_currency(self):
+        try:
+            currency = self.soup.find('th', text='Currency').nextSibling.text
+            self.article_dict["currency"] = currency
+        except:
+            self.article_dict["currency"] = "NOT FOUND IN THIS ARTICLE"
         
 if __name__ == "__main__":
     this_scraper = Scraper("United_States")

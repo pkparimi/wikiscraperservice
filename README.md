@@ -104,6 +104,7 @@ The following parameters allow for a variety of returns within the JSON file.
           * GDP_per_cap - PPP GDP per capita of country (string formatted)
           * area_km - area of country in km squared  
           * area_mi - area of country in mi squared
+          * currency - currency of country
      * If 'y' is entered as a parameter but no country data exists (i.e. for an animal) each of these keys' values will be "NOT FOUND IN THIS ARTICLE"
      * defaulted to 'n' (no) which will not provide any quick country info
      * http://flip3.engr.oregonstate.edu:6231/?article=*yourarticlehere*&country_data=*y*

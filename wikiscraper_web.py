@@ -51,6 +51,7 @@ def scraper():
             this_scraper.get_GDP()
             this_scraper.get_population()
             this_scraper.get_language()
+            this_scraper.get_currency()
         
         future_response = json.dumps(this_scraper.article_dict)
         future_response = future_response.replace('\\n', ' ')
