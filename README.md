@@ -88,12 +88,12 @@ http://flip3.engr.oregonstate.edu:6231/
 The following parameters allow for a variety of returns within the JSON file. 
 * article
      * This is required at a minimum, the title of the wiki article to scrape.
-     * http://flip3.engr.oregonstate.edu:6231/?article=*yourarticlehere*
+     * http://flip3.engr.oregonstate.edu:6231/?article=yourarticlehere
 * full_text
      * if this is 'y': entire table of contents with text for each section will be provided in the return JSON - nested by the table of contents
      * This will take some time so if the brief description is all you need 'n' is recommended here
      * defaulted to 'n' (no) which will provide only the article text before the table of contents
-     * http://flip3.engr.oregonstate.edu:6231/?article=*yourarticlehere*&full_text=*y*
+     * http://flip3.engr.oregonstate.edu:6231/?article=yourarticlehere&full_text=y
 * country_data
      * if this is 'y': return JSON will have the below easily retrievable keys and values (values are all string formatted)
           * capital_name - name of capital city
@@ -107,7 +107,7 @@ The following parameters allow for a variety of returns within the JSON file.
           * currency - currency of country
      * If 'y' is entered as a parameter but no country data exists (i.e. for an animal) each of these keys' values will be "NOT FOUND IN THIS ARTICLE"
      * defaulted to 'n' (no) which will not provide any quick country info
-     * http://flip3.engr.oregonstate.edu:6231/?article=*yourarticlehere*&country_data=*y*
+     * http://flip3.engr.oregonstate.edu:6231/?article=yourarticlehere&country_data=y
 * images
      * if this is 'y': return JSON will include links to images the article as a list/dict as a value of the 'images' key 
      * image_format parameter is defaulted to 'main' so only the main images of the article will return
