@@ -202,6 +202,7 @@ class Scraper:
         except:
             self.article_dict["capital_name"] = "NOT FOUND IN THIS ARTICLE"
             self.article_dict["capital_gps"] = "NOT FOUND IN THIS ARTICLE"
+            
     def get_language(self):
         try:
             official_languages = self.soup.find(name='th', text='Official\xa0languages')
