@@ -2,3 +2,5 @@
 /venv
 /extra.txt
 /test_scraper.py
+/tablescraper.py
+/scraperhelpers.py
