@@ -131,6 +131,8 @@ class Scraper:
 
             this_dict["info"] = description
             print("-processing " + self.article_list[i])
+
+    def get_basic_description(self):
         toc_soup = self.soup.find(id="toc")
         p_before_toc = toc_soup.find_all_previous("p")
         pre_toc_description = ""
@@ -142,6 +144,9 @@ class Scraper:
                 pre_toc_description = p.text + " " + pre_toc_description
 
         self.article_dict["info"] = pre_toc_description
+        
+    
+    def get_images(self):
         self.article_dict["images"] = {}
         image_dict = self.article_dict["images"]
 
@@ -151,58 +156,76 @@ class Scraper:
                 if image['alt'] != 'Page semi-protected':
                     print("-processing image" + image['alt'])
                     image_dict[image['alt']] = image['src']
-                    
+            
     def get_capital(self):
-        capital = self.soup.find('th',text="Capital")
-        capitalname = capital.next_sibling.text
-        capital_name_breakpoint = None
-        capital_gps_breakpoint = None
-        for i in range(len(capitalname)):
-            if not capital_name_breakpoint and capitalname[i].isdigit():
-                capital_name_breakpoint = i
-            if not capital_gps_breakpoint and capitalname[i] == '\ufeff':
-                capital_gps_breakpoint = i
+        try:
+            capital = self.soup.find('th',text="Capital")
+            capitalname = capital.next_sibling.text
+            capital_name_breakpoint = None
+            capital_gps_breakpoint = None
+            for i in range(len(capitalname)):
+                if not capital_name_breakpoint and capitalname[i].isdigit():
+                    capital_name_breakpoint = i
+                if not capital_gps_breakpoint and capitalname[i] == '\ufeff':
+                    capital_gps_breakpoint = i
 
-        self.article_dict["capital_name"] = capitalname[:capital_name_breakpoint]
-        self.article_dict["capital_gps"] = capitalname[capital_name_breakpoint:capital_gps_breakpoint]    
-        
+            self.article_dict["capital_name"] = capitalname[:capital_name_breakpoint]
+            self.article_dict["capital_gps"] = capitalname[capital_name_breakpoint:capital_gps_breakpoint]    
+        except:
+            self.article_dict["capital_name"] = "NOT FOUND IN THIS ARTICLE"
+            self.article_dict["capital_gps"] = "NOT FOUND IN THIS ARTICLE"
     def get_language(self):
-        official_languages = self.soup.find(name='th', text='Official\xa0languages')
-        self.article_dict["language_name"] = official_languages.next_sibling.find('a').text
-    
+        try:
+            official_languages = self.soup.find(name='th', text='Official\xa0languages')
+            self.article_dict["language_name"] = official_languages.next_sibling.find('a').text
+        except:
+            self.article_dict["language_name"] = "NOT FOUND IN THIS ARTICLE"
+            
     def get_population(self):
-        population = self.soup.find('a', text='Population').parent.parent.nextSibling.find(class_='infobox-data').text
-        population = population.strip()
-        for i in range(len(population)):
-            if not population[i].isdigit() and population[i] != ',':
-                self.article_dict["population"] = population[:i]
-                break
+        try:
+            population = self.soup.find('a', text='Population').parent.parent.nextSibling.find(class_='infobox-data').text
+            population = population.strip()
+            for i in range(len(population)):
+                if not population[i].isdigit() and population[i] != ',':
+                    self.article_dict["population"] = population[:i]
+                    break
+        except:
+            self.article_dict["population"] = "NOT FOUND IN THIS ARTICLE"
     
     def get_GDP(self):
-        GDP_total = self.soup.find('a', text='GDP').parent.parent.nextSibling.find(class_='infobox-data').text
-        GDP_total = GDP_total.strip()
-        for i in range(len(GDP_total)):
-            if GDP_total[i] ==  'n':
-                self.article_dict["GDP_total"] = GDP_total[:i+1]
-                break
-            
-        GDP_per_cap = self.soup.find('a', text='GDP').parent.parent.nextSibling.nextSibling.find(class_='infobox-data').text
-        GDP_per_cap = GDP_per_cap.strip()
-        for i in range(len(GDP_per_cap)):
-            if not GDP_per_cap[i].isdigit() and GDP_per_cap[i] != ',' and GDP_per_cap[i] != '$':
-                self.article_dict["GDP_per_cap"] = GDP_per_cap[:i]
-                break
+        try:
+            GDP_total = self.soup.find('a', text='GDP').parent.parent.nextSibling.find(class_='infobox-data').text
+            GDP_total = GDP_total.strip()
+            for i in range(len(GDP_total)):
+                if GDP_total[i] ==  'n':
+                    self.article_dict["GDP_total"] = GDP_total[:i+1]
+                    break
+        except:
+            self.article_dict["GDP_total"] = "NOT FOUND IN THIS ARTICLE"
+        
+        try:    
+            GDP_per_cap = self.soup.find('a', text='GDP').parent.parent.nextSibling.nextSibling.find(class_='infobox-data').text
+            GDP_per_cap = GDP_per_cap.strip()
+            for i in range(len(GDP_per_cap)):
+                if not GDP_per_cap[i].isdigit() and GDP_per_cap[i] != ',' and GDP_per_cap[i] != '$':
+                    self.article_dict["GDP_per_cap"] = GDP_per_cap[:i]
+                    break
+        except:
+            self.article_dict["GDP_per_cap"] = "NOT FOUND IN THIS ARTICLE"
             
     def get_area(self):
-        area = self.soup.find('a', text='Area ').parent.parent.nextSibling.find(class_='infobox-data').text
-        area = area.strip()
-        locale.setlocale(locale.LC_ALL, 'en_US')
-        for i in range(len(area)):
-            if area[i] == '\xa0':
-                self.article_dict["area_km"] = area[:i] + " km^2"
-                self.article_dict["area_mi"] = locale.format("%d", int(int(area[:i].replace(",","")) * 0.386102), grouping=True) + " mi^2"
-                break
-        
+        try:
+            area = self.soup.find('a', text='Area ').parent.parent.nextSibling.find(class_='infobox-data').text
+            area = area.strip()
+            locale.setlocale(locale.LC_ALL, 'en_US')
+            for i in range(len(area)):
+                if area[i] == '\xa0':
+                    self.article_dict["area_km"] = area[:i] + " km^2"
+                    self.article_dict["area_mi"] = locale.format("%d", int(int(area[:i].replace(",","")) * 0.386102), grouping=True) + " mi^2"
+                    break
+        except:
+            self.article_dict["area_km"] = "NOT FOUND IN THIS ARTICLE"
+            self.article_dict["area_mi"] = "NOT FOUND IN THIS ARTICLE"
         
         
 if __name__ == "__main__":

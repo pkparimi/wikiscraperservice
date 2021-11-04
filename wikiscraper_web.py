@@ -11,12 +11,41 @@ app = Flask(__name__)
 @app.route("/", methods=['GET'])
 def scraper():
     article = request.args.get("article")
+    full_text = request.args.get("full_text")
+    images = request.args.get("images")
+    country_data = request.args.get("country_data")
+    print(full_text)
     if article:
-        this_scraper = Scraper(article)
+        try:
+            this_scraper = Scraper(article)
+        except:
+            return "<h1>Sorry that article was not found!<h1>"
         
-        this_scraper.table_of_content_creator()
+        if full_text == "y":
+            try:
+                this_scraper.table_of_content_creator()
+                this_scraper.article_text_retriever()
+                this_scraper.get_basic_description()
+            except:
+                return "<h1>Sorry there was an error retrieving the article text<h1>"
+        else:
+            try:
+                this_scraper.get_basic_description()
+            except:
+                return "<h1>Sorry there was an error retrieving the article text<h1>"
+            
+        if images == "y":
+            try:
+                this_scraper.get_images()
+            except:
+                return "<h1>Sorry there was an error retrieving the images, try different parameters.<h1>"
         
-        this_scraper.article_text_retriever()
+        if country_data == "y":
+            this_scraper.get_area()
+            this_scraper.get_capital()
+            this_scraper.get_GDP()
+            this_scraper.get_population()
+            this_scraper.get_language()
         
         future_response = json.dumps(this_scraper.article_dict)
         future_response = future_response.replace('\\n', ' ')
@@ -41,4 +70,4 @@ def scraper():
 # Listener
 
 if __name__ == "__main__":
-    app.run(port=6231, debug=True) 
+    app.run(port=6232, debug=True) 
