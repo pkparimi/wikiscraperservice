@@ -1,7 +1,6 @@
 from flask import Flask, request
 import json
 from scraper import Scraper
-import unicodedata
 
 # Configuration
 
@@ -13,6 +12,7 @@ def scraper():
     article = request.args.get("article")
     full_text = request.args.get("full_text")
     images = request.args.get("images")
+    image_format = request.args.get("image_format")
     country_data = request.args.get("country_data")
     print(full_text)
     if article:
@@ -36,7 +36,12 @@ def scraper():
             
         if images == "y":
             try:
-                this_scraper.get_images()
+                if image_format == 'list':
+                    this_scraper.get_images(format="list")
+                elif image_format == "dictionary":
+                    this_scraper.get_images(format="dictionary")
+                else:
+                    this_scraper.get_images(format="main")
             except:
                 return "<h1>Sorry there was an error retrieving the images, try different parameters.<h1>"
         

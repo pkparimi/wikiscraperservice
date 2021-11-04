@@ -146,16 +146,44 @@ class Scraper:
         self.article_dict["info"] = pre_toc_description
         
     
-    def get_images(self):
-        self.article_dict["images"] = {}
-        image_dict = self.article_dict["images"]
+    def get_images(self, format):
+        if format == "dictionary":
+            self.article_dict["images"] = {}
+            image_dict = self.article_dict["images"]
 
-        images = self.soup.findAll('img')
-        for image in images:
-            if image.has_attr('alt') and image.has_attr('src') and image['alt'] != '':
-                if image['alt'] != 'Page semi-protected':
-                    print("-processing image" + image['alt'])
-                    image_dict[image['alt']] = image['src']
+            images = self.soup.findAll('img')
+            for image in images:
+                if image.has_attr('alt') and image.has_attr('src') and image['alt'] != '':
+                    if image['alt'] != 'Page semi-protected':
+                        print("-processing image" + image['alt'])
+                        image_dict[image['alt']] = image['src']
+        if format == "list":
+            self.article_dict["images"] = []
+            image_list = self.article_dict["images"]
+
+            images = self.soup.findAll('img')
+            for image in images:
+                if image.has_attr('alt') and image.has_attr('src') and image['alt'] != '':
+                    if image['alt'] != 'Page semi-protected':
+                        print("-processing image" + image['alt'])
+                        image_list.append(image['src'])
+                        
+        if format == "main":
+            self.article_dict["images"] = []
+            image_list = self.article_dict["images"]
+            
+            main_image_soup = self.soup.find(class_="infobox-image")
+            if not main_image_soup:
+                main_image_soup = self.soup.find(class_="image-section")
+            if not main_image_soup:
+                main_image_soup = self.soup.find(class_="image")
+                
+            main_images = main_image_soup.findAll('img')
+            
+            for image in main_images:
+                if image.has_attr('alt') and image.has_attr('src') and image['alt'] != '':
+                    image_list.append(image['src'])
+
             
     def get_capital(self):
         try:
