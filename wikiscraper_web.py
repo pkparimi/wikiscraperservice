@@ -1,10 +1,12 @@
 from flask import Flask, request
 import json
+from flask_cors import CORS
 from scraper import Scraper
 
 # Configuration
 
 app = Flask(__name__)
+CORS(app)
 
 # Routes
 @app.route("/", methods=['GET'])
