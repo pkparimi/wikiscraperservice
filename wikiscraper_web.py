@@ -6,18 +6,15 @@ from scraper import Scraper
 # Configuration
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # allows for cross-origin requests
 
-# Routes
+# Route
 @app.route("/", methods=['GET'])
 def scraper():
-    article = request.args.get("article")
-    full_text = request.args.get("full_text")
-    images = request.args.get("images")
-    image_format = request.args.get("image_format")
-    country_data = request.args.get("country_data")
-    print(full_text)
+    article, full_text, images, image_format, country_data = get_args(request)
+
     if article:
+        return get_article(article, full_text, images, image_format, country_data)
         try:
             this_scraper = Scraper(article)
         except:
@@ -75,7 +72,43 @@ def scraper():
     
     return 'Please enter article in query parameters'
 
+def get_article(article, full_text, images, image_format, country_data):
+    try:
+        this_scraper = Scraper(article)
+    except:
+        return "<h1>Sorry that article was not found!<h1>"
+    
+    if not get_text(this_scraper, full_text):
+        return "<h1>Sorry there was an error retrieving the article text<h1>"
+    
+def get_text(scraper, full_text):
+    
+    if full_text == 'y':
+        try:
+            scraper.table_of_content_creator()
+            scraper.article_text_retriever()
+            scraper.get_basic_description()
+        except:
+            return False
+    else:
+        try:
+            scraper.get_basic_description()
+        except:
+            return False
+        
+    return True
+    
+    
+def get_args(request):
+    article = request.args.get("article")
+    full_text = request.args.get("full_text")
+    images = request.args.get("images")
+    image_format = request.args.get("image_format")
+    country_data = request.args.get("country_data")
+    
+    return article, full_text, images, image_format, country_data
+
 # Listener
 
 if __name__ == "__main__":
-    app.run(port=6231, debug=True) 
+    app.run(port=6249, debug=True) 
